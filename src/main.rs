@@ -1,4 +1,5 @@
 mod ast;
+mod code;
 mod ir;
 
 use std::env::args;
@@ -13,6 +14,7 @@ use lalrpop_util::lalrpop_mod;
 lalrpop_mod!(sysy);
 
 // cargo run -- -koopa input/hello.c -o output/hello.koopa
+// cargo run -- -riscv input/hello.c -o output/hello.asm
 fn main() {
     if let Err(err) = try_main() {
         eprintln!("{}", err);
@@ -43,7 +45,9 @@ fn try_main() -> Result<(), Error> {
           .generate_on(&program_ir)
           .map_err(Error::Io);
     }
-    Ok(())
+
+    // generate RISC-V assembly
+    code::generate_asm(&program_ir, &output).map_err(Error::Io)
 }
 
 /// Error returned by `main` procedure.
@@ -91,6 +95,7 @@ impl CommandLineArgs {
             (Some(m), Some(input), Some(o), Some(output)) if o == "-o" => {
             let mode = match m.as_str() {
                 "-koopa" => Mode::Koopa,
+                "-riscv" => Mode::Riscv,
                 _ => return Err(Error::InvalidArgs),
             };
             Ok(Self {
@@ -108,4 +113,6 @@ impl CommandLineArgs {
 enum Mode {
     /// Compile SysY to Koopa IR.
     Koopa,
+    /// Compile SysY to RISC-V assembly.
+    Riscv,
 }
