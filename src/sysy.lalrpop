@@ -28,7 +28,7 @@ FuncType: FuncType = "int" => FuncType::Int;
 
 Block: Block = "{" <stmt: Stmt> "}" => Block { <> };
 
-Stmt: Stmt = "return" <num: Number> ";" => Stmt { <> };
+Stmt: Stmt = "return" <num: Number> ";" => Stmt::Return(Return { <> });
 
 Number: i32 = <num: IntConst> => <>;
 

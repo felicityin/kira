@@ -187,6 +187,7 @@ dependencies = [
  "koopa",
  "lalrpop",
  "lalrpop-util",
+ "regex",
 ]
 
 [[package]]
